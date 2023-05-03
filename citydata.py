@@ -63,7 +63,7 @@ def extrapolate_daily_temperatures(monthly_averages):
     return daily_temperatures
 
 
-daily_temperatures = extrapolate_daily_temperatures(monthly_averages)
+# daily_temperatures = extrapolate_daily_temperatures(monthly_averages)
 
 
 class CityInfo():

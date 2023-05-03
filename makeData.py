@@ -1,9 +1,9 @@
 from random import random
 
-from demoData.celebrationData import make_my_event_scores
-from demoData.citydata import make_my_cities
-from demoData.groceryLists import GroceryList
-from demoData.product_values import calculate_day_score
+from celebrationData import make_my_event_scores
+from citydata import make_my_cities
+from groceryLists import GroceryList
+from product_values import calculate_day_score
 
 import numpy as np
 from noise import snoise2
@@ -69,6 +69,7 @@ for city in my_cities.values():
 
         my_score = calculate_day_score(day, city, my_events)
         weighted_purchases = my_score.spend_weight * simplex_noise_values[day] * purchases_per_day
+        daily_purchases = []
         while weighted_purchases > 0:
             weighted_purchases -= 1
             purchase = Purchase()
@@ -129,6 +130,8 @@ for city in my_cities.values():
                 new_year_purchase.price = next_price
                 daily_purchases.append(new_year_purchase)
                 weighted_purchases -= 1
+
+        print(daily_purchases)
 
 
 

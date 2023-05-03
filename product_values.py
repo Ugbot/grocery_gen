@@ -2,8 +2,8 @@ import enum
 import math
 from typing import List
 
-from demoData.celebrationData import EventScores
-from demoData.citydata import CityInfo
+from celebrationData import EventScores
+from citydata import CityInfo
 
 
 
