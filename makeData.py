@@ -1,4 +1,8 @@
-from random import random
+import json
+import random
+from pprint import pprint
+
+from pydantic import BaseModel
 
 from celebrationData import make_my_event_scores
 from citydata import make_my_cities
@@ -27,8 +31,7 @@ def generate_simplex_noise(period, num_values, amplitude=1, seed=0, octaves=1, p
     return noise_values
 
 
-
-class Purchase():
+class Purchase(BaseModel):
     city: str
     day: int
     item: str
@@ -37,10 +40,13 @@ class Purchase():
 
 def get_random_item_from_dict(my_dict):
     return random.choice(list(my_dict.items()))
+
+
 def seeded_random(seed):
     random.seed(seed)
     while True:
         yield random.random()
+
 
 random_gen = seeded_random(42)
 period = 365
@@ -58,9 +64,7 @@ my_events = make_my_event_scores()
 
 my_groceries = GroceryList()
 
-
 purchases_per_day = 1000
-
 
 daily_purchases = []
 
@@ -72,12 +76,12 @@ for city in my_cities.values():
         daily_purchases = []
         while weighted_purchases > 0:
             weighted_purchases -= 1
-            purchase = Purchase()
+            purchase = Purchase(city="city", day=1, item="item", price=10)
             purchase.city = city.name
             purchase.day = day
             purchase.item, purchase.price = get_random_item_from_dict(my_groceries.general)
 
-            daily_purchases.append(purchase)
+            daily_purchases.append(purchase.json())
 
             if random_gen.__next__() < my_score.xmas_weight:
                 next_item, next_price = get_random_item_from_dict(my_groceries.xmas)
@@ -86,9 +90,8 @@ for city in my_cities.values():
                 xmas_purchase.day = day
                 xmas_purchase.item = next_item
                 xmas_purchase.price = next_price
-                daily_purchases.append(xmas_purchase)
-                weighted_purchases -=1
-
+                daily_purchases.append(xmas_purchase.json())
+                weighted_purchases -= 1
 
             if random_gen.__next__() < my_score.thanksgiving_weight:
                 next_item, next_price = get_random_item_from_dict(my_groceries.thanksgiving)
@@ -97,7 +100,7 @@ for city in my_cities.values():
                 thanksgiving_purchase.day = day
                 thanksgiving_purchase.item = next_item
                 thanksgiving_purchase.price = next_price
-                daily_purchases.append(thanksgiving_purchase)
+                daily_purchases.append(thanksgiving_purchase.json())
                 weighted_purchases -= 1
 
             if random_gen.__next__() < my_score.easter_weight:
@@ -107,7 +110,7 @@ for city in my_cities.values():
                 easter_purchase.day = day
                 easter_purchase.item = next_item
                 easter_purchase.price = next_price
-                daily_purchases.append(easter_purchase)
+                daily_purchases.append(easter_purchase.json())
                 weighted_purchases -= 1
 
             if random_gen.__next__() < my_score.valentines_weight:
@@ -117,9 +120,8 @@ for city in my_cities.values():
                 valentines_purchase.day = day
                 valentines_purchase.item = next_item
                 valentines_purchase.price = next_price
-                daily_purchases.append(valentines_purchase)
+                daily_purchases.append(valentines_purchase.json())
                 weighted_purchases -= 1
-
 
             if random_gen.__next__() < my_score.new_year_weight:
                 next_item, next_price = get_random_item_from_dict(my_groceries.new_year)
@@ -128,12 +130,9 @@ for city in my_cities.values():
                 new_year_purchase.day = day
                 new_year_purchase.item = next_item
                 new_year_purchase.price = next_price
-                daily_purchases.append(new_year_purchase)
+                daily_purchases.append(new_year_purchase.json())
                 weighted_purchases -= 1
 
-        print(daily_purchases)
-
-
-
-
-
+        # print(daily_purchases)
+        json_purchases = json.dumps(daily_purchases)
+        pprint(json_purchases)

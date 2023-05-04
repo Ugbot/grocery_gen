@@ -50,7 +50,7 @@ class buy_calcuation():
     time_of_year: int
 
 
-def calculate_day_score(time_of_year: int, city :CityInfo, event_scores: EventScores) -> day_score:
+def calculate_day_score(time_of_year: int, city:  CityInfo, event_scores: EventScores) -> day_score:
 
     my_day = day_score()
     my_day.spend_weight = city.GDP * city.population

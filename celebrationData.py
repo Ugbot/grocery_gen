@@ -21,7 +21,7 @@ def easter_sunday(year):
     return month, day
 
 
-def day_of_year(month, day, year):
+def my_day_of_year(month, day, year) -> int:
     return (date(year, month, day) - date(year, 1, 1)).days + 1
 
 
@@ -71,11 +71,11 @@ def make_my_event_scores() -> Dict[str, EventScores]:
     event_scores = EventScores()
     year = 2023
     easter_month, easter_day = easter_sunday(2023)
-    xmas = day_of_year(12, 25 - 19, year)
-    easter = day_of_year(easter_month, easter_day - 19, year)
-    thanksgiving = day_of_year(11, 22 - 19, year)  # This assumes Thanksgiving is always on November 22nd
-    new_years = day_of_year(12, 31 - 18, year - 1)  # Subtracting 18 to account for wrapping around the year
-    valentines = day_of_year(2, 14 - 19, year)
+    xmas = my_day_of_year(12, 25, 2023)
+    easter = my_day_of_year(easter_month, easter_day, year) - 19
+    thanksgiving = my_day_of_year(11, 3, year)  # This assumes Thanksgiving is always on November 22nd
+    new_years = my_day_of_year(12, 31 - 18, year - 1)  # Subtracting 18 to account for wrapping around the year
+    valentines = my_day_of_year(1, 25, year)
 
     event_scores.thanksgiving_weight = [day_value(day, thanksgiving, thanksgiving + 19) for day in range(1, 366)]
     event_scores.xmas_weight = [day_value(day, xmas, xmas + 19) for day in range(1, 366)]
@@ -83,6 +83,7 @@ def make_my_event_scores() -> Dict[str, EventScores]:
     event_scores.valentines_weight = [day_value(day, valentines, valentines + 19) for day in range(1, 366)]
     event_scores.halloween_weight = [day_value(day, 304, 304 + 19) for day in range(1, 366)]
     event_scores.new_year_weight = [day_value(day, new_years, new_years + 19) for day in range(1, 366)]
+    return event_scores
 
 
 

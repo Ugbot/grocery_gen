@@ -201,4 +201,5 @@ def make_my_cities() -> Dict[str, CityInfo]:
     MyCityDict["San Jose"].easter_weight = 1.0
     MyCityDict["San Jose"].valentines_weight = 1.0
     MyCityDict["San Jose"].halloween_weight = 1.0
+    MyCityDict["San Jose"].new_year_weight = 1.0
     return MyCityDict
