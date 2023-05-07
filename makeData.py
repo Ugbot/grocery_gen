@@ -65,15 +65,23 @@ my_events = make_my_event_scores()
 my_groceries = GroceryList()
 
 purchases_per_day = 1000
+newyear_purchases = 0
+easter_purchases = 0
+thanksgiving_purchases = 0
+xmas_purchases = 0
+hallween_purchases = 0
 
-daily_purchases = []
-
+total_purchases = 0
 for city in my_cities.values():
     for day in range(365):
 
         my_score = calculate_day_score(day, city, my_events)
-        weighted_purchases = my_score.spend_weight * simplex_noise_values[day] * purchases_per_day
+        weighted_purchases = my_score.spend_weight * (simplex_noise_values[day] + 1) * purchases_per_day
         daily_purchases = []
+        if my_score.valentines_weight > 0.3:
+            print(f"Valentines day in {city.name} on day {day}")
+            pass
+
         while weighted_purchases > 0:
             weighted_purchases -= 1
             purchase = Purchase(city="city", day=1, item="item", price=10)
@@ -82,57 +90,49 @@ for city in my_cities.values():
             purchase.item, purchase.price = get_random_item_from_dict(my_groceries.general)
 
             daily_purchases.append(purchase.json())
-
+            my_rand = random_gen.__next__()
             if random_gen.__next__() < my_score.xmas_weight:
                 next_item, next_price = get_random_item_from_dict(my_groceries.xmas)
-                xmas_purchase = Purchase()
-                xmas_purchase.city = city.name
-                xmas_purchase.day = day
-                xmas_purchase.item = next_item
-                xmas_purchase.price = next_price
+                xmas_purchase = Purchase(city = city.name, day = day, item = next_item, price = next_price)
                 daily_purchases.append(xmas_purchase.json())
                 weighted_purchases -= 1
+                xmas_purchases += 1
 
             if random_gen.__next__() < my_score.thanksgiving_weight:
                 next_item, next_price = get_random_item_from_dict(my_groceries.thanksgiving)
-                thanksgiving_purchase = Purchase()
-                thanksgiving_purchase.city = city.name
-                thanksgiving_purchase.day = day
-                thanksgiving_purchase.item = next_item
-                thanksgiving_purchase.price = next_price
+                thanksgiving_purchase = Purchase(city = city.name, day = day, item = next_item, price = next_price)
                 daily_purchases.append(thanksgiving_purchase.json())
                 weighted_purchases -= 1
+                thanksgiving_purchases += 1
 
             if random_gen.__next__() < my_score.easter_weight:
                 next_item, next_price = get_random_item_from_dict(my_groceries.easter)
-                easter_purchase = Purchase()
-                easter_purchase.city = city.name
-                easter_purchase.day = day
-                easter_purchase.item = next_item
-                easter_purchase.price = next_price
+                easter_purchase =Purchase(city = city.name, day = day, item = next_item, price = next_price)
                 daily_purchases.append(easter_purchase.json())
                 weighted_purchases -= 1
+                easter_purchases += 1
+
+            if my_score.valentines_weight > 0.3:
+                print(f"Valentines day in {city.name} on day {day}")
+                print(f"Valentines weight is {my_score.valentines_weight}, random is {random_gen.__next__()}"                )
 
             if random_gen.__next__() < my_score.valentines_weight:
                 next_item, next_price = get_random_item_from_dict(my_groceries.valentines)
-                valentines_purchase = Purchase()
-                valentines_purchase.city = city.name
-                valentines_purchase.day = day
-                valentines_purchase.item = next_item
-                valentines_purchase.price = next_price
+                valentines_purchase = Purchase(city = city.name, day = day, item = next_item, price = next_price)
+
                 daily_purchases.append(valentines_purchase.json())
                 weighted_purchases -= 1
 
             if random_gen.__next__() < my_score.new_year_weight:
                 next_item, next_price = get_random_item_from_dict(my_groceries.new_year)
-                new_year_purchase = Purchase()
-                new_year_purchase.city = city.name
-                new_year_purchase.day = day
-                new_year_purchase.item = next_item
-                new_year_purchase.price = next_price
+                new_year_purchase = Purchase(city = city.name, day = day, item = next_item, price = next_price)
                 daily_purchases.append(new_year_purchase.json())
                 weighted_purchases -= 1
+                newyear_purchases += 1
 
         # print(daily_purchases)
+        total_purchases += len(daily_purchases)
         json_purchases = json.dumps(daily_purchases)
-        pprint(json_purchases)
+        # pprint(json_purchases)
+
+pprint(f"total purchases simulated is {total_purchases}, {newyear_purchases} new year, {easter_purchases} easter, {thanksgiving_purchases} thanksgiving, {xmas_purchases} xmas")
