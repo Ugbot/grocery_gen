@@ -119,7 +119,7 @@ async def my_loop(my_producer):
 
 
             while weighted_purchases > 0:
-                basket_size = max(round(random.gauss(25 * holiday_weighting, 12)), 2) + 2
+                basket_size = max(round(random.gauss(25 * holiday_weighting, 12 * ((1 + holiday_weighting)/2) )), 2) + 2
                 my_basket = Basket(id=next(basket_id), city=city.name, purchase_day=current_day.timestamp(),
                                    purchases=[], total_purchases=basket_size)
 
