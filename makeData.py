@@ -74,7 +74,7 @@ def seeded_random(seed):
 
 
 async def my_loop(my_producer):
-    topic_name = "basket-input"
+    topic_name = "CDC-input"
     producer = my_producer
     random_gen = seeded_random(42)
     period = 365
@@ -93,7 +93,7 @@ async def my_loop(my_producer):
 
     my_groceries = GroceryList()
 
-    purchases_per_day = 10009
+    purchases_per_day = 5000
     newyear_purchases = 0
     easter_purchases = 0
     thanksgiving_purchases = 0
@@ -103,23 +103,25 @@ async def my_loop(my_producer):
     total_purchases = 0
 
     start_date = datetime.datetime(2020, 1, 1) + datetime.timedelta(hours=3.4)
-
-    for city in my_cities.values():
-        for day in range(365):
+    for day in range(365):
+        for city in my_cities.values():
 
             my_score = calculate_day_score(day, city, my_events)
             holiday_weighting = ((1 + my_score.xmas_weight) *
                                  (1 + my_score.thanksgiving_weight) *
                                  (1 + my_score.easter_weight) *
                                  (1 + my_score.halloween_weight) *
-                                 (1 + my_score.newyear_weight))
-            weighted_purchases = my_score.spend_weight * (simplex_noise_values[day] + 1) * purchases_per_day * holiday_weighting
+                                 (1 + my_score.new_year_weight))
+            weighted_purchases = my_score.spend_weight * (
+                    simplex_noise_values[day] + 1) * purchases_per_day * holiday_weighting
             daily_purchases = []
             current_day = start_date + datetime.timedelta(days=day)
 
-
             while weighted_purchases > 0:
-                basket_size = max(round(random.gauss(25 * holiday_weighting, 12 * ((1 + holiday_weighting)/2) )), 2) + 2
+                current_day = current_day + datetime.timedelta(
+                    seconds=(max(86400, (86400 / (min(weighted_purchases, 1))))))
+                basket_size = max(round(random.gauss(25 * holiday_weighting, 12 * ((1 + holiday_weighting) / 2))),
+                                  2) + 2
                 my_basket = Basket(id=next(basket_id), city=city.name, purchase_day=current_day.timestamp(),
                                    purchases=[], total_purchases=basket_size)
 
