@@ -1,6 +1,7 @@
 from typing import Dict, List
 
 import numpy as np
+from numpy.core.records import ndarray
 
 # temperature data
 NewYorkCity = [32, 35, 42, 52, 62, 72, 77, 75, 68, 57, 48, 38]
@@ -71,6 +72,7 @@ class CityInfo():
     population: float
     GDP: float
     temp_per_day: List[float]
+    noise_values: ndarray
     thanksgiving_weight: float
     xmas_weight: float
     easter_weight: float

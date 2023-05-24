@@ -85,9 +85,14 @@ async def my_loop(my_producer):
     persistence = 0.5
     id_gen = SnowflakeGenerator(42)
     basket_id = SnowflakeGenerator(420)
-    simplex_noise_values = generate_simplex_noise(period, num_values, amplitude, seed, octaves, persistence)
 
     my_cities = make_my_cities()
+
+
+    for key, value in my_cities.items():
+        my_cities[key].noise_values = generate_simplex_noise(period, num_values, amplitude, seed, octaves, persistence)
+
+    simplex_noise_values = generate_simplex_noise(period, num_values, amplitude, seed, octaves, persistence)
 
     my_events = make_my_event_scores()
 
@@ -113,12 +118,12 @@ async def my_loop(my_producer):
                                  (1 + my_score.halloween_weight) *
                                  (1 + my_score.new_year_weight))
             weighted_purchases = my_score.spend_weight * (
-                    simplex_noise_values[day] + 1) * purchases_per_day * holiday_weighting
+                    city.noise_values[day] + 1) * purchases_per_day * holiday_weighting
             daily_purchases = []
             current_day = start_date + datetime.timedelta(days=day)
 
             while weighted_purchases > 0:
-                current_day = current_day + datetime.timedelta(
+                current_day = current_day + datetime.timedelta(   
                     seconds=(max(86400, (86400 / (min(weighted_purchases, 1))))))
                 basket_size = max(round(random.gauss(25 * holiday_weighting, 12 * ((1 + holiday_weighting) / 2))),
                                   2) + 2
