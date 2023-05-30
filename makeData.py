@@ -63,7 +63,7 @@ class Basket(BaseModel):
     pass
 
 
-def get_random_item_from_dict(my_dict):
+def  get_random_item_from_dict(my_dict):
     return random.choice(list(my_dict.items()))
 
 
